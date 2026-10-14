@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600" role="img" aria-labelledby="title desc">
+  <title id="title">Unit test isolation compared with real local smoke test</title>
+  <desc id="desc">Comparison showing test-only doubles injected into the FastAPI application for deterministic unit tests and the live smoke test using real localhost FastAPI, Ollama, index, and audit database.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#34506a"/></marker><style>.t{font:700 23px Arial,sans-serif;fill:#11283b}.h{font:700 16px Arial,sans-serif;fill:#11283b}.l{font:14px Arial,sans-serif;fill:#23445a}.b{stroke:#34506a;stroke-width:2;rx:12}.a{stroke:#34506a;stroke-width:3;fill:none;marker-end:url(#arrow)}.n{font:13px Arial,sans-serif;fill:#5b3d00}</style></defs>
+  <rect width="1400" height="600" fill="#f8fbfd"/><text x="45" y="48" class="t">Testing strategy: deterministic architectural tests first, real local wiring second</text>
+  <rect x="45" y="90" width="610" height="420" class="b" fill="#e8f2fb"/><text x="70" y="128" class="h">`pytest` — no live provider calls</text>
+  <rect x="80" y="165" width="200" height="105" class="b" fill="#ffffff"/><text x="102" y="200" class="h">FastAPI TestClient</text><text x="102" y="227" class="l">real endpoint behavior</text>
+  <rect x="370" y="145" width="230" height="145" class="b" fill="#fff6e8"/><text x="395" y="182" class="h">Tests-only doubles</text><text x="395" y="209" class="l">retriever / scorer</text><text x="395" y="236" class="l">decision maker / router</text><text x="395" y="263" class="l">fixed HTTP transport</text>
+  <rect x="215" y="350" width="255" height="100" class="b" fill="#ffffff"/><text x="240" y="385" class="h">In-memory graph + temp SQLite</text><text x="240" y="412" class="l">fast, repeatable assertions</text>
+  <path d="M280 217 H370" class="a"/><path d="M485 290 V350 H470" class="a"/><path d="M280 270 V350" class="a"/>
+  <text x="85" y="485" class="n">Proves policy, access, branches, audit safety, schemas, and client payload contracts.</text>
+  <rect x="745" y="90" width="610" height="420" class="b" fill="#edf7ee"/><text x="770" y="128" class="h">`python3 sanity_build/smoke.py` — real localhost path</text>
+  <rect x="780" y="175" width="165" height="105" class="b" fill="#ffffff"/><text x="805" y="210" class="h">Smoke client</text><text x="805" y="237" class="l">real HTTP</text>
+  <rect x="995" y="175" width="165" height="105" class="b" fill="#ffffff"/><text x="1020" y="210" class="h">FastAPI</text><text x="1020" y="237" class="l">LangGraph</text>
+  <rect x="1190" y="150" width="130" height="155" class="b" fill="#ffffff"/><text x="1215" y="185" class="h">Local</text><text x="1215" y="212" class="l">Ollama</text><text x="1215" y="239" class="l">index</text><text x="1215" y="266" class="l">SQLite</text>
+  <path d="M945 227 H995" class="a"/><path d="M1160 227 H1190" class="a"/>
+  <rect x="920" y="350" width="300" height="100" class="b" fill="#fff6e8"/><text x="945" y="385" class="h">Readable JSON + audit assertion</text><text x="945" y="412" class="l">initial and manual review responses</text>
+  <path d="M1075 280 V350" class="a"/>
+  <text x="785" y="485" class="n">Proves the installed configuration and live local dependencies work together.</text>
+</svg>

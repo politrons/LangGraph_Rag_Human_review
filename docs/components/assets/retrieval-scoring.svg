@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
+  <title id="title">Offline RAG indexing and distributed online hybrid retrieval</title>
+  <desc id="desc">Diagram showing Markdown knowledge being chunked and embedded offline, while a separate RAG LangGraph service role-filters and ranks sanitized online queries before returning typed evidence to the parent decision graph.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#31526a"/></marker><style>.t{font:700 23px Arial,sans-serif;fill:#11283b}.h{font:700 16px Arial,sans-serif;fill:#11283b}.l{font:14px Arial,sans-serif;fill:#23445a}.n{font:13px Arial,sans-serif;fill:#5b3e00}.b{stroke:#31526a;stroke-width:2;rx:12}.a{stroke:#31526a;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke:#647c8d;stroke-width:2;fill:none;stroke-dasharray:8 7;marker-end:url(#arrow)}</style></defs>
+  <rect width="1400" height="650" fill="#f8fbfd"/><text x="45" y="47" class="t">Hybrid RAG: offline knowledge preparation, distributed authorization, rank fusion, and grounded model inputs</text>
+  <rect x="45" y="85" width="610" height="235" class="b" fill="#e8f2fb"/><text x="70" y="120" class="h">Offline — `scripts/build_rag_index.py`</text>
+  <rect x="70" y="150" width="150" height="105" class="b" fill="#ffffff"/><text x="90" y="185" class="h">Guidelines</text><text x="90" y="212" class="l">Markdown / text</text>
+  <rect x="280" y="150" width="150" height="105" class="b" fill="#ffffff"/><text x="300" y="185" class="h">Chunking</text><text x="300" y="212" class="l">1,200 chars</text><text x="300" y="234" class="l">160 overlap</text>
+  <rect x="490" y="150" width="140" height="105" class="b" fill="#ffffff"/><text x="510" y="185" class="h">Ollama</text><text x="510" y="212" class="l">`/api/embed`</text>
+  <path d="M220 203 H280" class="a"/><path d="M430 203 H490" class="a"/>
+  <path d="M560 255 V360 H650" class="a"/><text x="420" y="292" class="n">JSONL: chunk ID, version, text, vector, allowed roles</text>
+  <rect x="685" y="85" width="670" height="235" class="b" fill="#edf7ee"/><text x="710" y="120" class="h">Port 8081 RAG subgraph — `rag/service.py` / `rag/retrieval.py`</text>
+  <rect x="710" y="150" width="145" height="105" class="b" fill="#ffffff"/><text x="730" y="185" class="h">Safe query</text><text x="730" y="212" class="l">product +</text><text x="730" y="234" class="l">sanitized narrative</text>
+  <rect x="895" y="150" width="175" height="105" class="b" fill="#fff6e8"/><text x="915" y="185" class="h">Role filter first</text><text x="915" y="212" class="l">exclude forbidden</text><text x="915" y="234" class="l">chunks</text>
+  <rect x="1110" y="150" width="215" height="105" class="b" fill="#ffffff"/><text x="1130" y="185" class="h">Hybrid rank</text><text x="1130" y="212" class="l">0.45 normalized BM25</text><text x="1130" y="234" class="l">+ 0.55 max(cosine, 0)</text>
+  <path d="M855 203 H895" class="a"/><path d="M1070 203 H1110" class="a"/>
+  <rect x="45" y="365" width="1310" height="230" class="b" fill="#f3edfa"/><text x="70" y="400" class="h">Grounded decision inputs — `integrations/clients.py`</text>
+  <rect x="95" y="440" width="215" height="105" class="b" fill="#ffffff"/><text x="115" y="475" class="h">Top authorized evidence</text><text x="115" y="502" class="l">excerpt + IDs + scores</text>
+  <rect x="420" y="440" width="215" height="105" class="b" fill="#ffffff"/><text x="440" y="475" class="h">Local risk estimate</text><text x="440" y="502" class="l">Ollama structured JSON</text>
+  <rect x="745" y="440" width="215" height="105" class="b" fill="#ffffff"/><text x="765" y="475" class="h">Decision proposal</text><text x="765" y="502" class="l">must cite supplied IDs</text>
+  <rect x="1070" y="440" width="215" height="105" class="b" fill="#fff6e8"/><text x="1090" y="475" class="h">Human review</text><text x="1090" y="502" class="l">model cannot authorize</text>
+  <path d="M1218 255 V440" class="a"/><path d="M310 492 H420" class="a"/><path d="M635 492 H745" class="a"/><path d="M960 492 H1070" class="a"/><path d="M650 360 H200 V440" class="dash"/>
+</svg>

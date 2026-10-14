@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc">
+  <title id="title">Identity and authorization decisions</title>
+  <desc id="desc">Diagram showing local header or OIDC JWT identity resolution into a principal, followed by actor tenant role authorization gates for submission, review, audit, and metrics.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#34506a"/></marker><style>.t{font:700 23px Arial,sans-serif;fill:#11283b}.h{font:700 16px Arial,sans-serif;fill:#11283b}.l{font:14px Arial,sans-serif;fill:#23445a}.b{stroke:#34506a;stroke-width:2;rx:12}.a{stroke:#34506a;stroke-width:3;fill:none;marker-end:url(#arrow)}.deny{font:14px Arial,sans-serif;fill:#943c20}.allow{font:14px Arial,sans-serif;fill:#25713c}</style></defs>
+  <rect width="1400" height="620" fill="#f8fbfd"/><text x="45" y="48" class="t">`auth.py`: independently resolve identity, then authorize each operation</text>
+  <rect x="55" y="100" width="255" height="165" class="b" fill="#e8f2fb"/><text x="80" y="140" class="h">Development input</text><text x="80" y="170" class="l">Actor header</text><text x="80" y="197" class="l">Tenant header</text><text x="80" y="224" class="l">Roles header</text>
+  <rect x="55" y="340" width="255" height="165" class="b" fill="#f3edfa"/><text x="80" y="380" class="h">Staging/production input</text><text x="80" y="410" class="l">Bearer JWT</text><text x="80" y="437" class="l">JWKS signing key</text><text x="80" y="464" class="l">issuer + audience</text>
+  <rect x="430" y="210" width="255" height="165" class="b" fill="#edf7ee"/><text x="470" y="250" class="h">`Principal`</text><text x="470" y="280" class="l">actor ID</text><text x="470" y="307" class="l">tenant ID</text><text x="470" y="334" class="l">normalized roles</text>
+  <path d="M310 182 H430" class="a"/><path d="M310 422 H370 V350 H430" class="a"/>
+  <rect x="805" y="85" width="490" height="430" class="b" fill="#fff6e8"/><text x="835" y="125" class="h">Operation-specific authorization</text>
+  <rect x="845" y="160" width="190" height="105" class="b" fill="#ffffff"/><text x="865" y="195" class="h">Start decision</text><text x="865" y="222" class="l">actor + tenant + exact</text><text x="865" y="245" class="l">role set must match body</text>
+  <rect x="1060" y="160" width="190" height="105" class="b" fill="#ffffff"/><text x="1080" y="195" class="h">Review</text><text x="1080" y="222" class="l">stored tenant + reviewer</text><text x="1080" y="245" class="l">approval role required</text>
+  <rect x="845" y="320" width="190" height="105" class="b" fill="#ffffff"/><text x="865" y="355" class="h">Audit read</text><text x="865" y="382" class="l">stored tenant match</text>
+  <rect x="1060" y="320" width="190" height="105" class="b" fill="#ffffff"/><text x="1080" y="355" class="h">Metrics</text><text x="1080" y="382" class="l">`ai_admin` only</text>
+  <path d="M685 290 H805" class="a"/><path d="M1035 212 H1060" class="a"/><path d="M940 265 V320" class="a"/><path d="M1155 265 V320" class="a"/>
+  <text x="795" y="560" class="allow">Allowed: continue to policy/graph or read operation</text><text x="795" y="590" class="deny">Denied: FastAPI returns 401 for missing/invalid identity or 403 for forbidden action</text>
+</svg>

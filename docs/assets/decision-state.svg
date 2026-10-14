@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="620" viewBox="0 0 1600 620" role="img" aria-labelledby="title description">
+  <title id="title">Decision state lifecycle</title>
+  <desc id="description">Parent LangGraph state machine with policy, a remote RAG subgraph call, local Ollama estimate, Ollama proposal, a human-review pause, and local recording or closure branches before evaluation.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .node { stroke-width: 2; rx: 14; } .h { font: 700 18px Arial, sans-serif; fill: #0f172a; } .t { font: 14px Arial, sans-serif; fill: #334155; } .s { font: 12px Arial, sans-serif; fill: #475569; } .label { font: 700 13px Arial, sans-serif; fill: #475569; } .arrow { fill: none; stroke: #475569; stroke-width: 2.4; marker-end: url(#a); } .dash { fill:none; stroke:#64748b; stroke-width:2; stroke-dasharray:7 5; marker-end:url(#a); }
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#475569"/></marker>
+  </defs>
+  <rect class="bg" width="1600" height="620"/>
+  <text class="h" x="50" y="48">Initial execution: POST /v1/cases/decisions</text>
+  <text class="t" x="50" y="72">State is stored per thread_id. The interrupt does not keep the HTTP request open.</text>
+
+  <circle cx="80" cy="170" r="26" fill="#0f172a"/><text x="62" y="176" font-family="Arial" font-size="14" font-weight="700" fill="#fff">START</text>
+  <rect class="node" x="145" y="125" width="170" height="92" fill="#dcfce7" stroke="#16a34a"/>
+  <text class="h" x="191" y="160">Policy</text><text class="t" x="171" y="185">PII + injection</text><text class="s" x="180" y="203">allow/review/block</text>
+  <rect class="node" x="390" y="125" width="160" height="92" fill="#ede9fe" stroke="#7c3aed"/>
+  <text class="h" x="424" y="160">Retrieve</text><text class="t" x="412" y="185">remote RAG service</text><text class="s" x="417" y="203">HTTP → subgraph</text>
+  <rect class="node" x="625" y="125" width="160" height="92" fill="#ede9fe" stroke="#7c3aed"/>
+  <text class="h" x="666" y="160">Score</text><text class="t" x="649" y="185">Ollama local</text><text class="s" x="650" y="203">non-calibrated</text>
+  <rect class="node" x="860" y="125" width="170" height="92" fill="#ede9fe" stroke="#7c3aed"/>
+  <text class="h" x="900" y="160">Decision</text><text class="t" x="880" y="185">LLM + citations</text><text class="s" x="880" y="203">validated schema</text>
+  <rect class="node" x="1105" y="115" width="210" height="112" fill="#fef3c7" stroke="#d97706"/>
+  <text class="h" x="1141" y="151">Human review</text><text class="t" x="1135" y="177">interrupt(request)</text><text class="s" x="1136" y="202">persisted checkpoint</text>
+  <rect class="node" x="155" y="310" width="160" height="82" fill="#fee2e2" stroke="#dc2626"/>
+  <text class="h" x="203" y="342">Blocked</text><text class="t" x="183" y="368">END without models</text>
+
+  <text class="label" x="331" y="119">allow / require_review</text>
+  <text class="label" x="197" y="279">block</text>
+  <path class="arrow" d="M106 170 H145"/>
+  <path class="arrow" d="M315 170 H390"/>
+  <path class="arrow" d="M550 170 H625"/>
+  <path class="arrow" d="M785 170 H860"/>
+  <path class="arrow" d="M1030 170 H1105"/>
+  <path class="arrow" d="M230 217 V310"/>
+
+  <path class="dash" d="M1210 227 V295"/>
+  <text class="label" x="1232" y="267">202: awaiting_human</text>
+  <text class="h" x="900" y="300">Resume: POST /review with the same thread_id</text>
+  <text class="t" x="900" y="324">Command(resume=review) continues from the human gate.</text>
+
+  <rect class="node" x="735" y="370" width="190" height="94" fill="#fef3c7" stroke="#d97706"/>
+  <text class="h" x="766" y="405">Review input</text><text class="t" x="759" y="430">approve / reject</text><text class="t" x="770" y="449">/ escalate</text>
+  <rect class="node" x="1010" y="370" width="160" height="94" fill="#dcfce7" stroke="#16a34a"/>
+  <text class="h" x="1051" y="406">Record</text><text class="t" x="1035" y="431">approve only</text><text class="s" x="1034" y="450">local-only</text>
+  <rect class="node" x="1010" y="505" width="160" height="76" fill="#e2e8f0" stroke="#64748b"/>
+  <text class="h" x="1054" y="537">Close</text><text class="t" x="1024" y="560">reject / escalate</text>
+  <rect class="node" x="1260" y="415" width="180" height="94" fill="#cffafe" stroke="#0891b2"/>
+  <text class="h" x="1296" y="450">Evaluate</text><text class="t" x="1280" y="475">citations + policy</text><text class="s" x="1280" y="494">final metrics</text>
+  <circle cx="1520" cy="462" r="27" fill="#0f172a"/><text x="1504" y="468" font-family="Arial" font-size="15" font-weight="700" fill="#fff">END</text>
+
+  <path class="arrow" d="M1210 295 H830 V370"/>
+  <path class="arrow" d="M925 417 H1010"/>
+  <path class="arrow" d="M830 464 V543 H1010"/>
+  <path class="arrow" d="M1170 417 H1260"/>
+  <path class="arrow" d="M1170 543 V509 H1260"/>
+  <path class="arrow" d="M1440 462 H1493"/>
+  <text class="label" x="947" y="403">approve</text>
+  <text class="label" x="850" y="519">reject / escalate</text>
+  <text class="s" x="1260" y="548">audit events emitted at every material node</text>
+</svg>

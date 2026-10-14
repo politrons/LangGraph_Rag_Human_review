@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="920" viewBox="0 0 1440 920" role="img" aria-labelledby="title desc">
+  <title id="title">Distributed RAG LangGraph subgraph topology</title>
+  <desc id="desc">The main decision graph calls a separate RAG service over HTTP. The service owns a small LangGraph subgraph and returns validated evidence, while the parent retains the decision state and human review.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#334155"/></marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #172554; }
+      .title { font-size: 29px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .boundary { fill: #f8fafc; stroke: #64748b; stroke-width: 2; stroke-dasharray: 8 6; }
+      .box { fill: #ffffff; stroke: #2563eb; stroke-width: 2; rx: 12; }
+      .node { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; rx: 10; }
+      .service { fill: #ecfdf5; stroke: #059669; stroke-width: 2; rx: 12; }
+      .store { fill: #fef3c7; stroke: #d97706; stroke-width: 2; rx: 10; }
+      .label { font-size: 17px; font-weight: 700; }
+      .body { font-size: 14px; fill: #334155; }
+      .small { font-size: 13px; fill: #475569; }
+      .edge { fill: none; stroke: #334155; stroke-width: 2.5; marker-end: url(#arrow); }
+      .return { fill: none; stroke: #059669; stroke-width: 2.5; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1440" height="920" fill="#ffffff"/>
+  <text x="50" y="55" class="title">One distributed LangGraph boundary: RAG as a separate service</text>
+  <text x="50" y="84" class="subtitle">The parent graph owns the governed decision. The RAG service owns retrieval code, embeddings, index access, and a separate RAG state.</text>
+
+  <rect x="45" y="125" width="570" height="620" class="boundary" rx="18"/>
+  <text x="75" y="162" class="label">Port 8080 — decision service</text>
+  <text x="75" y="187" class="small">Main StateGraph&lt;DecisionState&gt; • durable parent thread_id • human interrupt remains here</text>
+
+  <rect x="85" y="225" width="220" height="90" class="node"/>
+  <text x="110" y="260" class="label">policy node</text>
+  <text x="110" y="285" class="body">sanitize + authorize</text>
+  <path d="M305 270 H365" class="edge"/>
+
+  <rect x="365" y="225" width="205" height="90" class="node"/>
+  <text x="392" y="260" class="label">retrieve node</text>
+  <text x="392" y="285" class="body">RemoteRagRetriever</text>
+
+  <rect x="85" y="390" width="485" height="125" class="box"/>
+  <text x="110" y="425" class="label">What the parent sends over HTTP</text>
+  <text x="110" y="453" class="body">query = sanitized product + narrative</text>
+  <text x="110" y="478" class="body">actor_roles, top_k, correlation_id = decision thread_id</text>
+  <text x="110" y="503" class="small">No DecisionState, human review, audit ledger, or original PII is sent.</text>
+
+  <rect x="85" y="575" width="485" height="125" class="box"/>
+  <text x="110" y="610" class="label">What the parent keeps</text>
+  <text x="110" y="638" class="body">DecisionState.evidence + evidence_retrieved audit event</text>
+  <text x="110" y="663" class="body">score → decision → human_review → route/close → evaluate</text>
+  <text x="110" y="688" class="small">The response is validated as RetrievedEvidence before it enters DecisionState.</text>
+
+  <rect x="790" y="125" width="605" height="735" class="boundary" rx="18"/>
+  <text x="820" y="162" class="label">Port 8081 — RAG service</text>
+  <text x="820" y="187" class="small">Independent FastAPI process • its own StateGraph&lt;RagState&gt; • no access to DecisionState</text>
+
+  <rect x="835" y="225" width="245" height="105" class="service"/>
+  <text x="860" y="260" class="label">POST /v1/rag/retrieve</text>
+  <text x="860" y="285" class="body">RagRetrievalRequest</text>
+  <text x="860" y="308" class="small">validates bounded query, roles, top_k</text>
+  <path d="M1080 277 H1135" class="edge"/>
+
+  <rect x="1135" y="225" width="215" height="105" class="node"/>
+  <text x="1165" y="260" class="label">RagState</text>
+  <text x="1165" y="285" class="body">request + evidence</text>
+  <text x="1165" y="308" class="small">rag-{request_id}</text>
+
+  <rect x="865" y="395" width="450" height="145" class="node"/>
+  <text x="895" y="430" class="label">RAG service graph</text>
+  <text x="895" y="460" class="body">START → retrieval_subgraph → END</text>
+  <text x="895" y="487" class="small">Child: START → retrieve → END; HybridRetriever uses permitted roles</text>
+  <text x="895" y="512" class="small">and returns serializable evidence into RagState.</text>
+  <path d="M1242 330 V395" class="edge"/>
+
+  <rect x="835" y="610" width="210" height="115" class="store"/>
+  <text x="865" y="647" class="label">JSONL index</text>
+  <text x="865" y="672" class="body">versioned chunks</text>
+  <text x="865" y="697" class="small">allowed_roles + vectors</text>
+  <path d="M1035 610 L1110 540" class="edge"/>
+
+  <rect x="1105" y="610" width="210" height="115" class="store"/>
+  <text x="1135" y="647" class="label">Ollama</text>
+  <text x="1135" y="672" class="body">POST /api/embed</text>
+  <text x="1135" y="697" class="small">sanitized query only</text>
+  <path d="M1200 610 V540" class="edge"/>
+
+  <path d="M570 270 H835" class="edge"/>
+  <text x="635" y="248" class="small">synchronous local HTTP request</text>
+  <path d="M835 350 H680 V340 H570" class="return"/>
+  <text x="618" y="375" class="small">RagRetrievalResponse: typed evidence + correlation ID</text>
+
+  <rect x="45" y="790" width="1350" height="80" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" rx="12"/>
+  <text x="75" y="824" class="label">Learning point</text>
+  <text x="225" y="824" class="body">`add_node("retrieve", ...)` does not distribute code by itself. The parent node makes an HTTP call; the remote process runs a separately compiled LangGraph subgraph.</text>
+  <text x="75" y="850" class="small">For this POC, parent decision checkpoints and RAG subgraph checkpoints are deliberately separate. Production can give each service its own durable store and idempotency policy.</text>
+</svg>

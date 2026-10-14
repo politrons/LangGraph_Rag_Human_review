@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img" aria-labelledby="title desc">
+  <title id="title">LangGraph decision workflow and review branches</title>
+  <desc id="desc">A parent graph with policy branching to block or a remote RAG subgraph call, a normal path through score and proposal to a persisted human review interrupt, then approved routing or rejected/escalated closure, all ending in evaluation.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#394d66"/></marker><style>.t{font:700 23px Arial,sans-serif;fill:#11283b}.h{font:700 16px Arial,sans-serif;fill:#11283b}.l{font:14px Arial,sans-serif;fill:#23445a}.b{stroke:#394d66;stroke-width:2.5;rx:14}.a{stroke:#394d66;stroke-width:3;fill:none;marker-end:url(#arrow)}.yes{font:14px Arial,sans-serif;fill:#27733d}.no{font:14px Arial,sans-serif;fill:#8b3c20}</style></defs>
+  <rect width="1400" height="720" fill="#f8fbfd"/><text x="45" y="50" class="t">`workflow.py` LangGraph topology — ordering is the governance mechanism</text>
+  <circle cx="95" cy="290" r="38" fill="#e8f2fb" stroke="#394d66" stroke-width="2.5"/><text x="72" y="296" class="h">START</text>
+  <rect x="185" y="235" width="160" height="110" class="b" fill="#edf7ee"/><text x="220" y="275" class="h">policy</text><text x="205" y="305" class="l">evaluate safe case</text>
+  <path d="M133 290 H185" class="a"/>
+  <rect x="430" y="115" width="165" height="105" class="b" fill="#ffece8"/><text x="470" y="155" class="h">blocked</text><text x="450" y="185" class="l">audit + END</text>
+  <rect x="430" y="235" width="165" height="110" class="b" fill="#ffffff"/><text x="465" y="275" class="h">retrieve</text><text x="447" y="305" class="l">HTTP RAG subgraph</text>
+  <path d="M345 260 H430" class="a"/><text x="360" y="245" class="no">block</text><path d="M345 310 H430" class="a"/><text x="355" y="338" class="yes">allow / require review</text>
+  <rect x="680" y="235" width="150" height="110" class="b" fill="#ffffff"/><text x="722" y="275" class="h">score</text><text x="698" y="305" class="l">local estimate</text>
+  <rect x="915" y="235" width="160" height="110" class="b" fill="#ffffff"/><text x="952" y="275" class="h">decision</text><text x="934" y="305" class="l">cited proposal</text>
+  <path d="M595 290 H680" class="a"/><path d="M830 290 H915" class="a"/>
+  <rect x="1160" y="215" width="185" height="150" class="b" fill="#fff6e8"/><text x="1190" y="258" class="h">human_review</text><text x="1182" y="288" class="l">interrupt() persists</text><text x="1195" y="313" class="l">state + waits</text><text x="1198" y="338" class="l">Command(resume)</text>
+  <path d="M1075 290 H1160" class="a"/>
+  <rect x="915" y="475" width="160" height="105" class="b" fill="#edf7ee"/><text x="963" y="515" class="h">route</text><text x="934" y="545" class="l">approve only</text>
+  <rect x="1160" y="475" width="185" height="105" class="b" fill="#ffece8"/><text x="1220" y="515" class="h">close</text><text x="1183" y="545" class="l">reject / escalate</text>
+  <path d="M1230 365 V420 H995 V475" class="a"/><text x="1050" y="408" class="yes">approve</text><path d="M1255 365 V475" class="a"/><text x="1268" y="430" class="no">reject / escalate</text>
+  <rect x="645" y="475" width="180" height="105" class="b" fill="#f3edfa"/><text x="690" y="515" class="h">evaluate</text><text x="664" y="545" class="l">metrics + audit</text>
+  <path d="M915 527 H825" class="a"/><path d="M1160 527 H825" class="a"/>
+  <circle cx="505" cy="640" r="38" fill="#e8f2fb" stroke="#394d66" stroke-width="2.5"/><text x="486" y="646" class="h">END</text><path d="M735 580 V640 H543" class="a"/><path d="M512 220 V602 H505" class="a"/>
+  <text x="65" y="690" class="l">Every node works on typed sanitized state and records material outcomes. The graph never routes before an authorized human approval.</text>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
+  <title id="title">Audit hash chain and evaluation metrics</title>
+  <desc id="desc">Diagram showing ordered audit events linked by HMAC hashes per thread and evaluation values recorded separately as aggregate metrics.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#344e65"/></marker><style>.t{font:700 23px Arial,sans-serif;fill:#11283b}.h{font:700 16px Arial,sans-serif;fill:#11283b}.l{font:14px Arial,sans-serif;fill:#23445a}.s{font:13px Arial,sans-serif;fill:#5b3d00}.b{stroke:#344e65;stroke-width:2;rx:12}.a{stroke:#344e65;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke:#728697;stroke-width:2;fill:none;stroke-dasharray:8 6;marker-end:url(#arrow)}</style></defs>
+  <rect width="1400" height="650" fill="#f8fbfd"/><text x="45" y="48" class="t">`audit.py`: append-only per-thread history plus evaluation metrics</text>
+  <rect x="45" y="85" width="960" height="390" class="b" fill="#edf7ee"/><text x="70" y="120" class="h">`audit_events` — one HMAC chain for each thread ID</text>
+  <rect x="80" y="175" width="190" height="190" class="b" fill="#ffffff"/><text x="105" y="215" class="h">case_received</text><text x="100" y="245" class="l">canonical safe payload</text><text x="100" y="272" class="l">previous: empty</text><text x="100" y="299" class="l">event HMAC #1</text>
+  <rect x="335" y="175" width="190" height="190" class="b" fill="#ffffff"/><text x="360" y="215" class="h">policy / evidence</text><text x="355" y="245" class="l">canonical payload</text><text x="355" y="272" class="l">previous: HMAC #1</text><text x="355" y="299" class="l">event HMAC #2</text>
+  <rect x="590" y="175" width="190" height="190" class="b" fill="#ffffff"/><text x="615" y="215" class="h">score / proposal</text><text x="610" y="245" class="l">canonical payload</text><text x="610" y="272" class="l">previous: HMAC #2</text><text x="610" y="299" class="l">event HMAC #3</text>
+  <rect x="815" y="175" width="150" height="190" class="b" fill="#fff6e8"/><text x="840" y="215" class="h">review +</text><text x="840" y="240" class="h">route/close</text><text x="835" y="272" class="l">previous hash</text><text x="835" y="299" class="l">event HMAC #N</text>
+  <path d="M270 270 H335" class="a"/><path d="M525 270 H590" class="a"/><path d="M780 270 H815" class="a"/>
+  <text x="80" y="420" class="s">Hash material = thread + case + event type + timestamp + canonical JSON payload + previous hash</text>
+  <rect x="1045" y="85" width="310" height="390" class="b" fill="#f3edfa"/><text x="1070" y="120" class="h">`metric_events`</text>
+  <rect x="1080" y="170" width="240" height="175" class="b" fill="#ffffff"/><text x="1100" y="210" class="h">Evaluation values</text><text x="1100" y="240" class="l">groundedness</text><text x="1100" y="267" class="l">policy compliance</text><text x="1100" y="294" class="l">evaluation passed (0/1)</text>
+  <path d="M890 365 V535 H1200 V345" class="dash"/><text x="940" y="525" class="l">record_evaluation()</text>
+  <rect x="350" y="525" width="330" height="70" class="b" fill="#e8f2fb"/><text x="375" y="553" class="h">Tenant-checked audit read</text><text x="375" y="578" class="l">ordered events + payload + hashes</text>
+  <rect x="800" y="525" width="330" height="70" class="b" fill="#e8f2fb"/><text x="825" y="553" class="h">Admin metrics summary</text><text x="825" y="578" class="l">per-metric sample count + average</text>
+  <path d="M525 475 V525" class="a"/><path d="M1200 475 V525 H1130" class="a"/>
+</svg>

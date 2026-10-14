@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+  <title id="title">Two request API lifecycle</title>
+  <desc id="desc">Sequence diagram showing the start request calls a separate RAG subgraph then pauses through a LangGraph interrupt, while a later reviewer request resumes the same thread through completion.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2c4a62"/></marker><style>.head{font:700 20px Arial,sans-serif;fill:#11283b}.small{font:14px Arial,sans-serif;fill:#26465e}.label{font:16px Arial,sans-serif;fill:#11283b}.lane{stroke:#7f9db2;stroke-width:2;stroke-dasharray:8 8}.call{stroke:#2c4a62;stroke-width:3;fill:none;marker-end:url(#arrow)}.return{stroke:#5f7080;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#arrow)}.box{stroke:#2c4a62;stroke-width:2;rx:10}.note{font:14px Arial,sans-serif;fill:#5c3d00}</style></defs>
+  <rect width="1400" height="700" fill="#f8fbfd"/>
+  <text x="50" y="48" class="head">Two-request lifecycle: the human pause is a persisted LangGraph interrupt, not an open HTTP connection</text>
+  <g class="label"><text x="100" y="100">Client</text><text x="345" y="100">FastAPI</text><text x="610" y="100">Policy + audit</text><text x="860" y="100">LangGraph / Ollama</text><text x="1150" y="100">Reviewer</text></g>
+  <g class="lane"><path d="M135 120 V650"/><path d="M390 120 V650"/><path d="M670 120 V650"/><path d="M940 120 V650"/><path d="M1200 120 V650"/></g>
+  <rect x="60" y="135" width="1080" height="260" class="box" fill="#eaf4fb"/>
+  <text x="80" y="165" class="head">Request 1 — start a decision</text>
+  <path d="M135 205 H390" class="call"/><text x="175" y="192" class="small">POST /v1/cases/decisions</text>
+  <path d="M390 245 H670" class="call"/><text x="445" y="232" class="small">authorize + sanitize + case_received</text>
+  <path d="M670 285 H940" class="call"/><text x="715" y="272" class="small">invoke graph: policy → HTTP RAG subgraph → score → proposal</text>
+  <path d="M940 325 H390" class="return"/><text x="560" y="312" class="note">interrupt(review request) + checkpoint keyed by thread_id</text>
+  <path d="M390 365 H135" class="return"/><text x="165" y="352" class="small">202 awaiting_human, thread_id, proposal, evidence</text>
+  <rect x="60" y="430" width="1280" height="205" class="box" fill="#fff6e8"/>
+  <text x="80" y="460" class="head">Request 2 — an authorized person resumes exactly that thread</text>
+  <path d="M1200 500 H390" class="call"/><text x="790" y="487" class="small">POST review with outcome + rationale; API checks stored case, tenant, reviewer role</text>
+  <path d="M390 540 H940" class="call"/><text x="575" y="527" class="small">Command(resume=review) returns from interrupt()</text>
+  <path d="M940 580 H390" class="return"/><text x="590" y="567" class="small">approve → local record; reject/escalate → close; evaluate + audit</text>
+  <path d="M390 620 H1200" class="return"/><text x="670" y="607" class="small">200 completed: routing + evaluation + proposal</text>
+</svg>
