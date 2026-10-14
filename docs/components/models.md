@@ -49,7 +49,8 @@ title, index version, optional URL, and all three scores. `RiskScore` declares
 the producing model name/version, numeric value, factors, and timestamp.
 `DecisionProposal` limits the recommendation to `accept`, `refer`, or
 `decline`, requires a meaningful rationale and one or more citations, and
-permits explicit conditions and an escalation reason.
+permits explicit conditions. A `refer` recommendation also requires a
+non-empty escalation reason.
 
 The combination means a reviewer can ask three concrete questions: which
 knowledge fragment was used, which model supplied the score, and which evidence

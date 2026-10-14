@@ -5,7 +5,7 @@ from enum import StrEnum
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
 
 class RequestedAction(StrEnum):
@@ -135,6 +135,16 @@ class DecisionProposal(BaseModel):
     cited_chunk_ids: list[str] = Field(min_length=1, max_length=10)
     required_conditions: list[str] = Field(default_factory=list, max_length=10)
     escalation_reason: str | None = Field(default=None, max_length=500)
+
+    @model_validator(mode="after")
+    def require_escalation_reason_for_referral(self) -> DecisionProposal:
+        if self.recommendation is Recommendation.REFER and not (
+            self.escalation_reason and self.escalation_reason.strip()
+        ):
+            raise ValueError(
+                "escalation_reason is required when recommendation is 'refer'"
+            )
+        return self
 
 
 class HumanReviewRequest(BaseModel):

@@ -82,7 +82,7 @@ The decision node uses the same native chat endpoint, but supplies the JSON
 schema for DecisionProposal. Ollama receives the sanitized case, local risk
 estimate, retrieved evidence, and the allowed evidence IDs. The response is
 validated again by the service, including a check that every cited ID was
-actually retrieved.
+actually retrieved and that referrals contain a non-empty escalation reason.
 
 Ollama structured output is used through its native format parameter; the
 service does not use an OpenAI client or OpenAI-compatible route. This follows

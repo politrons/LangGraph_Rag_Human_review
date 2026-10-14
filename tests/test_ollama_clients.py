@@ -3,6 +3,8 @@ from __future__ import annotations
 import json as json_module
 
 import httpx
+import pytest
+from pydantic import ValidationError
 
 from ai_architect.integrations import clients
 from ai_architect.integrations.clients import (
@@ -192,6 +194,37 @@ def test_ollama_decision_maker_validates_native_structured_response(monkeypatch)
     ).propose(_submission(), score, [evidence])
 
     assert result == proposal
+
+
+def test_ollama_decision_maker_rejects_referral_without_escalation_reason(monkeypatch) -> None:
+    evidence = _evidence()
+    response_content = {
+        "recommendation": "refer",
+        "rationale": "The risk score requires an underwriter review under the retrieved guideline.",
+        "confidence": 0.81,
+        "cited_chunk_ids": [evidence.chunk_id],
+        "escalation_reason": None,
+    }
+
+    def fake_post(url: str, *, json: object, timeout: float) -> httpx.Response:
+        """Test double: returns an incomplete referral proposal from Ollama."""
+        del url, json, timeout
+        return _response({"message": {"content": json_module.dumps(response_content)}})
+
+    monkeypatch.setattr(clients.httpx, "post", fake_post)
+    score = RiskScore(
+        model_name="ollama/llama3.1:8b",
+        model_version="local-development",
+        score=0.73,
+        factors=["flood zone"],
+    )
+
+    with pytest.raises(ValidationError, match="escalation_reason is required"):
+        OllamaDecisionMaker(
+            base_url="http://ollama.test",
+            model="llama3.1:8b",
+            timeout_seconds=12,
+        ).propose(_submission(), score, [evidence])
 
 
 def test_local_case_router_records_without_external_http() -> None:
