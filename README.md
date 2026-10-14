@@ -49,6 +49,9 @@ pip install -e '.[dev,postgres]'
 cp .env.example .env
 ~~~
 
+Run every subsequent command with this virtual environment. The explicit paths
+below prevent macOS from invoking another globally installed ai_architect package.
+
 The local defaults are:
 
 ~~~text
@@ -61,22 +64,17 @@ OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 Build the included knowledge index:
 
 ~~~bash
-python3 scripts/build_rag_index.py \\
-  --documents data/knowledge \\
-  --output data/index/policy_chunks.jsonl \\
-  --version 2026.10 \\
-  --allowed-role underwriter \\
-  --allowed-role claims_adjuster
+./.venv/bin/python scripts/build_rag_index.py --documents data/knowledge --output data/index/policy_chunks.jsonl --version 2026.10 --allowed-role underwriter --allowed-role claims_adjuster
 ~~~
 
 Start the services in this order, each in its own terminal:
 
 ~~~bash
 # Terminal 1: RAG owns the JSONL index and Ollama embeddings.
-ai-architect-rag
+./.venv/bin/ai-architect-rag
 
 # Terminal 2: decision graph, human review, audit, and local routing.
-ai-architect
+./.venv/bin/ai-architect
 ~~~
 
 The server packages also support direct module execution. This is useful when
@@ -84,10 +82,10 @@ you want to make the package boundary explicit:
 
 ~~~bash
 # Terminal 1
-python3 -m ai_architect.rag.service
+./.venv/bin/python -m ai_architect.rag.service
 
 # Terminal 2
-python3 -m ai_architect.decision.api
+./.venv/bin/python -m ai_architect.decision.api
 ~~~
 
 Verify both local processes before sending a case:
@@ -133,8 +131,8 @@ system is called.
 Start the RAG service first, then the decision API in separate terminals:
 
 ~~~bash
-ai-architect-rag
-ai-architect
+./.venv/bin/ai-architect-rag
+./.venv/bin/ai-architect
 ~~~
 
 Run these examples in a third terminal. They use non-PII demo data.
@@ -352,9 +350,9 @@ external routing integration.
 ## Verification
 
 ~~~bash
-ruff check src scripts sanity_build tests
-python3 -m compileall -q src scripts sanity_build tests
-pytest
+./.venv/bin/ruff check src scripts sanity_build tests
+./.venv/bin/python -m compileall -q src scripts sanity_build tests
+./.venv/bin/pytest
 ~~~
 
 The tests cover PII redaction, the remote-RAG contract and subgraph,

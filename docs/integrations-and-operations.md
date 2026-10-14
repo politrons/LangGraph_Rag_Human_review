@@ -96,25 +96,14 @@ The indexer accepts Markdown and text documents, splits them into chunks,
 requests native Ollama embeddings, and writes JSONL:
 
 ~~~bash
-python3 scripts/build_rag_index.py \\
-  --documents data/knowledge \\
-  --output data/index/policy_chunks.jsonl \\
-  --version 2026.10 \\
-  --allowed-role underwriter \\
-  --allowed-role claims_adjuster
+python3 scripts/build_rag_index.py --documents data/knowledge --output data/index/policy_chunks.jsonl --version 2026.10 --allowed-role underwriter --allowed-role claims_adjuster
 ~~~
 
 The command defaults to the configured local address and nomic-embed-text. To
 use a different local Ollama instance or embedding model:
 
 ~~~bash
-python3 scripts/build_rag_index.py \\
-  --documents data/knowledge \\
-  --output data/index/policy_chunks.jsonl \\
-  --version 2026.10 \\
-  --ollama-base-url http://127.0.0.1:11434 \\
-  --ollama-embedding-model nomic-embed-text \\
-  --allowed-role underwriter
+python3 scripts/build_rag_index.py --documents data/knowledge --output data/index/policy_chunks.jsonl --version 2026.10 --ollama-base-url http://127.0.0.1:11434 --ollama-embedding-model nomic-embed-text --allowed-role underwriter
 ~~~
 
 Keep a previous index copy when changing the knowledge base or embedding
@@ -171,13 +160,9 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install -e '.[dev,postgres]'
 cp .env.example .env
-python3 scripts/build_rag_index.py \\
-  --documents data/knowledge \\
-  --output data/index/policy_chunks.jsonl \\
-  --version 2026.10 \\
-  --allowed-role underwriter
-ai-architect-rag
-ai-architect
+./.venv/bin/python scripts/build_rag_index.py --documents data/knowledge --output data/index/policy_chunks.jsonl --version 2026.10 --allowed-role underwriter
+./.venv/bin/ai-architect-rag
+./.venv/bin/ai-architect
 ~~~
 
 Start `ai-architect-rag` before `ai-architect`. The RAG service listens on
@@ -195,9 +180,9 @@ curl --fail --silent \
 Before committing changes, run:
 
 ~~~bash
-ruff check src scripts sanity_build tests
-python3 -m compileall -q src scripts sanity_build tests
-pytest
+./.venv/bin/ruff check src scripts sanity_build tests
+./.venv/bin/python -m compileall -q src scripts sanity_build tests
+./.venv/bin/pytest
 ~~~
 
 The unit suite uses explicitly labeled test doubles only under tests. It also
